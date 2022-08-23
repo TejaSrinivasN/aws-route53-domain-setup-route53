@@ -1,30 +1,36 @@
 name: CI
-on: [push]
+  push:
+    branches:
+      - main
+
 jobs:
   build-and-publish:
       runs-on: ubuntu-latest
       steps:
         - name: Checkout
           uses: actions/checkout@v3
+
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@V1
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+#            aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+            aws-region: 'us-east-1'
+
         - name: setup python
           uses: actions/setup-python@v2
           with:
             python-version: 3.8 #install the python needed
+
         - name: Install Dependencies
           run: |
             python -m pip install --upgrade pip
-            run: pip install -r requirements.txt
+
         - name: install boto3 module
           run: |
             pip install boto3
-        - name: Configure AWS credentials
-          uses: aws-actions/configure-aws-credentials@master
-          with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-            aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-            aws-region: 'us-east-1'    
+
         - name: execute py script # run the python.py to get the latest data
           run: |
             python dns.py
-        
