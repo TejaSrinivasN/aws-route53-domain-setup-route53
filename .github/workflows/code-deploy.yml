@@ -34,3 +34,5 @@ jobs:
         - name: execute py script # run the python.py to get the latest data
           run: |
             python dns.py
+<<<<<<< HEAD
+
